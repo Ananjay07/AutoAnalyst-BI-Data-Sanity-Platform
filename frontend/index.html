@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoAnalyst — Business Intelligence & Data Sanity Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --surface: rgba(17,24,39,0.95);
+      --surface2: rgba(31,41,55,0.95);
+      --border: rgba(255,255,255,0.08);
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --blue: #2563eb;
+      --blue-dim: rgba(37,99,235,0.12);
+      --green: #10b981;
+      --green-dim: rgba(16,185,129,0.12);
+      --amber: #f59e0b;
+      --amber-dim: rgba(245,158,11,0.12);
+      --red: #ef4444;
+      --red-dim: rgba(239,68,68,0.12);
+      --violet: #8b5cf6;
+      --font: 'Outfit', sans-serif;
+      --font-code: 'Space Grotesk', monospace;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);background-image:radial-gradient(at 0% 0%,rgba(37,99,235,0.08) 0,transparent 50%),radial-gradient(at 100% 100%,rgba(139,92,246,0.06) 0,transparent 50%);background-attachment:fixed;color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+    header{background:rgba(17,24,39,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:16px 36px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;font-size:18px;font-weight:800;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;box-shadow:0 4px 14px rgba(37,99,235,0.35)}
+    header h1{font-size:18px;font-weight:700;letter-spacing:-0.02em}
+    header p{font-size:12px;color:var(--muted)}
+    #runtime-badge{display:none;font-family:var(--font-code);font-size:12px;color:var(--blue);background:var(--blue-dim);border:1px solid rgba(37,99,235,0.25);padding:4px 14px;border-radius:999px;font-weight:600}
+    main{max-width:1220px;margin:0 auto;padding:28px 22px 60px}
+    .grid{display:grid;grid-template-columns:310px 1fr;gap:22px;align-items:start}
+    @media(max-width:920px){.grid{grid-template-columns:1fr}}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px;backdrop-filter:blur(10px)}
+    .card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+    .preset-list{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+    .preset-btn{background:rgba(31,41,55,0.4);border:1.5px solid var(--border);border-radius:10px;padding:12px 15px;text-align:left;cursor:pointer;color:var(--text);transition:.2s;display:flex;flex-direction:column;gap:3px}
+    .preset-btn:hover{border-color:#4b5563;background:var(--surface2)}
+    .preset-btn.active{border-color:var(--blue);background:var(--blue-dim)}
+    .preset-btn h4{font-size:13px;font-weight:600}
+    .preset-btn p{font-size:11px;color:var(--muted);line-height:1.4}
+    .upload-area{border:2px dashed var(--border);border-radius:14px;padding:22px 14px;text-align:center;cursor:pointer;transition:.2s;background:rgba(17,24,39,0.4);display:flex;flex-direction:column;align-items:center;gap:7px}
+    .upload-area:hover,.upload-area.dragover{border-color:var(--blue);background:var(--blue-dim)}
+    .upload-area p{font-size:13px;font-weight:500}
+    .upload-area span{font-size:11px;color:var(--muted)}
+    #file-input{display:none}
+    .form-label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:7px}
+    .select-input{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:8px;color:var(--text);padding:9px 13px;font-family:var(--font);font-size:14px;outline:none;transition:.2s;cursor:pointer}
+    .select-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-dim)}
+    .run-btn{width:100%;background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;font-family:var(--font);font-size:14px;font-weight:700;padding:12px;border:none;border-radius:9px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;box-shadow:0 4px 14px rgba(37,99,235,0.25)}
+    .run-btn:hover{opacity:.92;transform:translateY(-1px)}
+    .run-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .tab-nav{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:22px;overflow-x:auto}
+    .tab-btn{background:none;border:none;color:var(--muted);padding:11px 17px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.2s;white-space:nowrap}
+    .tab-btn:hover{color:var(--text)}
+    .tab-btn.active{color:var(--text);border-bottom-color:var(--blue)}
+    .tab-panel{display:none;animation:fadeUp .3s ease}
+    .tab-panel.active{display:block}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+    #empty-view{text-align:center;padding:80px 20px}
+    #empty-view .icon{font-size:46px;margin-bottom:14px;opacity:.25}
+    #empty-view h3{font-size:17px;font-weight:600;color:var(--muted);margin-bottom:7px}
+    #empty-view p{font-size:13px;color:#6b7280;max-width:380px;margin:0 auto}
+    #loader-view{display:none;flex-direction:column;align-items:center;justify-content:center;padding:100px 20px;gap:14px}
+    .spinner{width:46px;height:46px;border:4px solid rgba(255,255,255,0.05);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px}
+    .metric-card{background:rgba(31,41,55,0.3);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+    .metric-card .label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px}
+    .metric-card .value{font-size:26px;font-weight:700;font-family:var(--font-code)}
+    .metric-card.blue .value{color:var(--blue)}
+    .metric-card.green .value{color:var(--green)}
+    .metric-card.amber .value{color:var(--amber)}
+    .metric-card.violet .value{color:var(--violet)}
+    .briefing-card{background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(139,92,246,0.04));border:1px solid rgba(37,99,235,0.22);border-radius:16px;padding:24px;margin-bottom:22px}
+    .briefing-card h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:16px}
+    .brief-section{font-size:14px;line-height:1.75;margin-bottom:14px}
+    .brief-section:last-child{margin-bottom:0}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:800px){.two-col{grid-template-columns:1fr}}
+    .chart-box{background:rgba(31,41,55,0.2);border:1px solid var(--border);border-radius:14px;padding:18px;display:flex;flex-direction:column;min-height:280px}
+    .chart-box h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:14px}
+    .chart-img{max-width:100%;height:auto;border-radius:8px;display:block}
+    .table-wrap{overflow-x:auto}
+    .tbl{width:100%;border-collapse:collapse;font-size:13px}
+    .tbl th{padding:9px 13px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border);text-transform:uppercase;font-size:11px;letter-spacing:.05em}
+    .tbl td{padding:9px 13px;border-bottom:1px solid rgba(255,255,255,0.03)}
+    .tbl tr:last-child td{border-bottom:none}
+    .tbl tr:hover td{background:rgba(255,255,255,0.02)}
+    .mono{font-family:var(--font-code);font-size:12px}
+    .tag{background:rgba(255,255,255,0.07);border-radius:4px;padding:2px 7px;font-family:var(--font-code);font-size:11px}
+    .alert{border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;gap:11px;align-items:flex-start}
+    .alert.green{background:var(--green-dim);border:1px solid rgba(16,185,129,0.25);color:#6ee7b7}
+    .alert.amber{background:var(--amber-dim);border:1px solid rgba(245,158,11,0.25);color:#fcd34d}
+    .alert.red{background:var(--red-dim);border:1px solid rgba(239,68,68,0.25);color:#fca5a5}
+    .alert h4{font-size:13px;font-weight:700;margin-bottom:3px}
+    .alert p{font-size:12px;line-height:1.5}
+    .driver-list{display:flex;flex-direction:column;gap:11px}
+    .driver-item{background:rgba(31,41,55,0.2);border:1px solid var(--border);border-radius:9px;padding:11px 15px}
+    .driver-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+    .driver-name{font-weight:600;font-size:13px}
+    .driver-val{font-family:var(--font-code);font-size:12px;font-weight:700;color:var(--blue)}
+    .driver-track{background:rgba(255,255,255,0.05);height:5px;border-radius:999px}
+    .driver-fill{background:linear-gradient(90deg,var(--blue),var(--violet));height:100%;border-radius:999px;width:0%;transition:width .8s cubic-bezier(.1,.8,.2,1)}
+  </style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">AA</div>
+    <div><h1>AutoAnalyst</h1><p>Business Intelligence · Data Sanity · Predictive Driver Engine</p></div>
+  </div>
+  <div id="runtime-badge"></div>
+</header>
+<main>
+  <div class="grid">
+    <aside>
+      <div class="card">
+        <div class="card-title">📊 Select Dataset</div>
+        <div class="preset-list" id="preset-list"></div>
+        <div class="card-title" style="margin-top:18px;margin-bottom:10px">📁 Upload Your File</div>
+        <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
+          <svg width="26" height="26" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          <p>Drag & Drop CSV / Excel</p>
+          <span>or click to browse</span>
+          <input type="file" id="file-input" accept=".csv,.xls,.xlsx" />
+        </div>
+      </div>
+      <div class="card" id="target-card" style="display:none">
+        <div class="card-title">🎯 Target Metric</div>
+        <label class="form-label" for="target-select">Column to Predict / Profile</label>
+        <select class="select-input" id="target-select"></select>
+        <button class="run-btn" id="run-btn" disabled>
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Run Audit & Driver Model
+        </button>
+      </div>
+    </aside>
+    <section>
+      <div class="card" id="empty-view">
+        <div class="icon">📈</div>
+        <h3>Welcome to AutoAnalyst</h3>
+        <p>Select a preset dataset or upload your own CSV / Excel file, choose a target metric and click Run.</p>
+      </div>
+      <div class="card" id="loader-view">
+        <div class="spinner"></div>
+        <h3 style="color:var(--text)">Executing Analytical Pipeline</h3>
+        <p style="color:var(--muted);font-size:13px">Running data sanity audit, training model, extracting drivers…</p>
+      </div>
+      <div id="results-view" style="display:none">
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="briefing">📝 Executive Briefing</button>
+          <button class="tab-btn" data-tab="sanity">🛡 Data Sanity</button>
+          <button class="tab-btn" data-tab="drivers">⭐ Key Drivers</button>
+          <button class="tab-btn" data-tab="evaluation">🏆 Model Performance</button>
+        </div>
+        <div class="tab-panel active" id="panel-briefing">
+          <div class="briefing-card">
+            <h3>📄 Actionable Executive Summary</h3>
+            <div class="brief-section" id="brief-sanity"></div>
+            <div class="brief-section" id="brief-drivers"></div>
+            <div class="brief-section" id="brief-strategy"></div>
+          </div>
+          <div class="two-col">
+            <div class="chart-box" id="corr-box"><h3>Correlation Matrix</h3><img class="chart-img" id="img-corr" alt="Correlation Heatmap" /></div>
+            <div class="chart-box" id="dist-box"><h3>Feature Distributions</h3><img class="chart-img" id="img-dist" alt="Feature Distributions" /></div>
+          </div>
+        </div>
+        <div class="tab-panel" id="panel-sanity">
+          <div class="metric-grid">
+            <div class="metric-card blue"><div class="label">Total Records</div><div class="value" id="val-rows">—</div></div>
+            <div class="metric-card blue"><div class="label">Parameters</div><div class="value" id="val-cols">—</div></div>
+            <div class="metric-card green"><div class="label">Memory</div><div class="value" id="val-mem">—</div></div>
+            <div class="metric-card" id="sanity-score-card"><div class="label">Sanity Status</div><div class="value" id="val-status">—</div></div>
+          </div>
+          <div id="sanity-alerts"></div>
+          <div class="card">
+            <div class="card-title">Dataset Schema Audit</div>
+            <div class="table-wrap">
+              <table class="tbl" id="schema-table">
+                <thead><tr><th>Column</th><th>Type</th><th>Missing</th><th>Outliers (IQR)</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="panel-drivers">
+          <div class="two-col">
+            <div class="chart-box"><h3>Feature Importance Ranking</h3><img class="chart-img" id="img-drivers" alt="Feature Importances" /></div>
+            <div>
+              <div class="card-title" style="margin-bottom:14px">Top Operational Drivers</div>
+              <div class="driver-list" id="driver-bars"></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-panel" id="panel-evaluation">
+          <div class="metric-grid" id="eval-grid"></div>
+          <div class="two-col">
+            <div class="chart-box"><h3>5-Fold Cross Validation</h3><img class="chart-img" id="img-cv" alt="Cross Validation" /></div>
+            <div class="chart-box"><h3 id="eval-chart-title">Model Diagnostics</h3><img class="chart-img" id="img-eval" alt="Model Evaluation" /></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<script>
+  const API="http://localhost:8000";
+  let activeSession=null;
+  const $=id=>document.getElementById(id);
+  const presetList=$("preset-list"),targetCard=$("target-card"),targetSelect=$("target-select");
+  const runBtn=$("run-btn"),emptyView=$("empty-view"),loaderView=$("loader-view");
+  const resultsView=$("results-view"),runtimeBadge=$("runtime-badge");
+
+  async function init(){
+    try{
+      const ds=await fetch(`${API}/datasets`).then(r=>r.json());
+      presetList.innerHTML="";
+      ds.forEach(d=>{
+        const btn=document.createElement("button");
+        btn.className="preset-btn";
+        btn.innerHTML=`<h4>${d.name}</h4><p>${d.description}</p>`;
+        btn.addEventListener("click",()=>selectPreset(d,btn));
+        presetList.appendChild(btn);
+      });
+    }catch{
+      presetList.innerHTML=`<div class="alert red"><div>⚠</div><div><h4>Backend Offline</h4><p>Run: <code>uvicorn main:app --reload --port 8000</code></p></div></div>`;
+    }
+  }
+
+  async function selectPreset(d,el){
+    document.querySelectorAll(".preset-btn").forEach(b=>b.classList.remove("active"));
+    el.classList.add("active");
+    showLoader();
+    try{
+      const s=await fetch(`${API}/datasets/${d.id}/columns`).then(r=>r.json());
+      activeSession=d.id;
+      fillDropdown(s.columns,d.target);
+    }catch(e){alert("Error: "+e.message);hideLoader();}
+  }
+
+  function fillDropdown(cols,rec){
+    targetSelect.innerHTML="";
+    cols.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;if(c===rec)o.selected=true;targetSelect.appendChild(o);});
+    targetCard.style.display="block";runBtn.disabled=false;
+    hideLoader();emptyView.style.display="block";resultsView.style.display="none";
+  }
+
+  const dropZone=$("drop-zone"),fileInput=$("file-input");
+  ["dragenter","dragover"].forEach(e=>dropZone.addEventListener(e,ev=>{ev.preventDefault();dropZone.classList.add("dragover");}));
+  ["dragleave","drop"].forEach(e=>dropZone.addEventListener(e,ev=>{ev.preventDefault();dropZone.classList.remove("dragover");}));
+  dropZone.addEventListener("drop",e=>{if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
+  fileInput.addEventListener("change",()=>{if(fileInput.files[0])handleFile(fileInput.files[0]);});
+
+  async function handleFile(file){
+    document.querySelectorAll(".preset-btn").forEach(b=>b.classList.remove("active"));
+    showLoader();
+    const fd=new FormData();fd.append("file",file);
+    try{
+      const r=await fetch(`${API}/analyze/upload`,{method:"POST",body:fd});
+      if(!r.ok){const e=await r.json();throw new Error(e.detail);}
+      const data=await r.json();
+      activeSession=data.session_id;
+      fillDropdown(data.columns,data.columns.at(-1));
+    }catch(e){alert("Upload failed: "+e.message);hideLoader();}
+  }
+
+  runBtn.addEventListener("click",async()=>{
+    if(!activeSession)return;
+    showLoader();resultsView.style.display="none";emptyView.style.display="none";
+    try{
+      const r=await fetch(`${API}/analyze/run`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({session_id:activeSession,target_column:targetSelect.value})});
+      if(!r.ok){const e=await r.json();throw new Error(e.detail);}
+      render(await r.json());
+    }catch(e){alert("Error: "+e.message);hideLoader();}
+  });
+
+  function render(d){
+    hideLoader();resultsView.style.display="block";
+    runtimeBadge.textContent=`⏱ ${d.runtime_sec}s`;runtimeBadge.style.display="block";
+    $("brief-sanity").innerHTML=md(d.report.sanity_briefing);
+    $("brief-drivers").innerHTML=md(d.report.root_cause_analysis);
+    $("brief-strategy").innerHTML=md(d.report.operational_strategy);
+    setImg("img-corr",d.charts.correlation,"corr-box");
+    setImg("img-dist",d.charts.distribution,"dist-box");
+    $("val-rows").textContent=d.sanity.shape.rows.toLocaleString();
+    $("val-cols").textContent=d.sanity.shape.cols;
+    $("val-mem").textContent=d.sanity.memory_mb+" MB";
+    const mK=Object.keys(d.sanity.missing),oK=Object.keys(d.sanity.outliers);
+    const sc=$("sanity-score-card"),sv=$("val-status");
+    sc.className="metric-card";
+    if(!mK.length&&!oK.length){sc.classList.add("green");sv.textContent="Stable";}
+    else if(mK.length&&oK.length){sc.classList.add("amber");sv.textContent="Caution";}
+    else{sc.classList.add("amber");sv.textContent="Warning";}
+    const al=$("sanity-alerts");al.innerHTML="";
+    if(!mK.length&&!oK.length){al.innerHTML=`<div class="alert green"><div>✓</div><div><h4>Clean Dataset</h4><p>Zero missing values and zero outliers detected.</p></div></div>`;}
+    else{
+      mK.forEach(col=>{const v=d.sanity.missing[col];al.innerHTML+=`<div class="alert ${v.pct>15?'red':'amber'}"><div>⚠</div><div><h4>Missing: ${col}</h4><p>${v.count} records (${v.pct}%) — imputation recommended.</p></div></div>`;});
+      oK.forEach(col=>{const v=d.sanity.outliers[col];al.innerHTML+=`<div class="alert amber"><div>⚡</div><div><h4>Outliers: ${col}</h4><p>${v.count} extreme values (${v.pct}%) — tree-based models advised.</p></div></div>`;});
+    }
+    const tb=document.querySelector("#schema-table tbody");tb.innerHTML="";
+    Object.keys(d.sanity.dtypes).forEach(col=>{
+      const isT=col===d.target,miss=d.sanity.missing[col],out=d.sanity.outliers[col];
+      tb.innerHTML+=`<tr><td class="mono" style="${isT?'color:var(--blue);font-weight:700':''}">${col}${isT?' <span class="tag" style="background:var(--blue-dim);color:var(--blue)">TARGET</span>':''}</td><td><span class="tag">${d.sanity.dtypes[col]}</span></td><td style="${miss?'color:var(--amber);font-weight:600':'color:var(--muted)'}">${miss?`${miss.count} (${miss.pct}%)`:'—'}</td><td style="${out?'color:var(--amber);font-weight:600':'color:var(--muted)'}">${out?`${out.count} (${out.pct}%)`:'—'}</td></tr>`;
+    });
+    setImg("img-drivers",d.charts.drivers);
+    const bc=$("driver-bars");bc.innerHTML="";
+    if(d.drivers&&d.drivers.length){
+      const mx=d.drivers[0].importance;
+      d.drivers.forEach(dr=>{const p=Math.max(5,dr.importance/mx*100);bc.innerHTML+=`<div class="driver-item"><div class="driver-header"><span class="driver-name">${dr.feature}</span><span class="driver-val">${(dr.importance*100).toFixed(1)}%</span></div><div class="driver-track"><div class="driver-fill" style="width:${p}%"></div></div></div>`;});
+    }else{bc.innerHTML=`<div class="alert amber"><div>⚠</div><div><h4>No drivers</h4><p>Ensure numeric feature columns are present.</p></div></div>`;}
+    const isC=d.metrics.problem_type==="classification";
+    $("eval-grid").innerHTML=isC
+      ?`${mc("Accuracy",pct(d.metrics.accuracy),"blue")}${mc("F1-Score",pct(d.metrics.f1),"green")}${mc("Precision",pct(d.metrics.precision),"violet")}${mc("Recall",pct(d.metrics.recall),"amber")}`
+      :`${mc("R² Score",d.metrics.r2.toFixed(3),"blue")}${mc("MAE",d.metrics.mae.toFixed(2),"green")}${mc("RMSE",d.metrics.rmse.toFixed(2),"violet")}${mc("CV Score",d.cross_val.mean.toFixed(3),"amber")}`;
+    $("eval-chart-title").textContent=isC?"Confusion Matrix":"Residual Error Dispersion";
+    setImg("img-cv",d.charts.cross_val);setImg("img-eval",d.charts.model_eval);
+    switchTab("briefing");
+  }
+
+  function showLoader(){loaderView.style.display="flex";emptyView.style.display="none";resultsView.style.display="none";runBtn.disabled=true;}
+  function hideLoader(){loaderView.style.display="none";runBtn.disabled=false;}
+  function setImg(id,src,boxId){const el=$(id);if(src){el.src=src;if(boxId)$(boxId).style.display="flex";}else{if(boxId)$(boxId).style.display="none";}}
+  function switchTab(n){document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===n));document.querySelectorAll(".tab-panel").forEach(p=>p.classList.toggle("active",p.id===`panel-${n}`));}
+  function pct(v){return v!=null?(v*100).toFixed(1)+"%":"—";}
+  function mc(l,v,c){return `<div class="metric-card ${c}"><div class="label">${l}</div><div class="value">${v}</div></div>`;}
+  function md(t){return t?t.replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>"):"";} 
+  document.querySelectorAll(".tab-btn").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
+  document.addEventListener("DOMContentLoaded",init);
+</script>
+</body>
+</html>
