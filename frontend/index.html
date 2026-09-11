@@ -826,6 +826,7 @@
 </main>
 
 <script>
+<<<<<<< HEAD
   const API = "https://autoanalyst-api-ok6t.onrender.com";
   let activeSession = null;
   const $ = id => document.getElementById(id);
@@ -892,6 +893,14 @@
   function stopLoader() {
     clearInterval(loaderInterval);
   }
+=======
+  const API="https://autoanalyst-api-ok6t.onrender.com";
+  let activeSession=null;
+  const $=id=>document.getElementById(id);
+  const presetList=$("preset-list"),targetCard=$("target-card"),targetSelect=$("target-select");
+  const runBtn=$("run-btn"),emptyView=$("empty-view"),loaderView=$("loader-view");
+  const resultsView=$("results-view"),runtimeBadge=$("runtime-badge");
+>>>>>>> 438babb279ef2d4e51c74bb511ae50e28372ec41
 
   async function init(){
     attachObservers();
