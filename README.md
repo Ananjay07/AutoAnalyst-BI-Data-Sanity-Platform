@@ -1,6 +1,8 @@
 # AutoAnalyst 📈
 > **Automated Business Intelligence, Data Sanity Auditor & Predictive Driver Engine**
 
+**🚀 Live Demo: [https://auto-analyst-bi-data-sanity-platfor.vercel.app/](https://auto-analyst-bi-data-sanity-platfor.vercel.app/)**
+
 AutoAnalyst is a self-serve analytics platform that automates data profiling, validates dataset quality, discovers predictive key drivers, and compiles executive-ready briefings — built with Python (FastAPI, Scikit-Learn, Pandas) and a responsive Glassmorphic vanilla dashboard.
 
 ---
