@@ -3,337 +3,1109 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AutoAnalyst — Business Intelligence & Data Sanity Platform</title>
+  <title>AutoAnalyst — Data Intelligence Command Center</title>
+  <meta name="description" content="AI-powered Data Intelligence & Analytics Platform. Turn Raw Data Into Decisions." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0f19;
-      --surface: rgba(17,24,39,0.95);
-      --surface2: rgba(31,41,55,0.95);
-      --border: rgba(255,255,255,0.08);
-      --text: #f3f4f6;
+      --bg: #050505;
+      --surface: rgba(15, 17, 21, 0.65);
+      --surface-solid: #0f1115;
+      --surface2: rgba(26, 29, 36, 0.8);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.15);
+      --text: #f8f9fa;
       --muted: #9ca3af;
-      --blue: #2563eb;
-      --blue-dim: rgba(37,99,235,0.12);
+      --blue: #3b82f6;
+      --blue-glow: rgba(59, 130, 246, 0.5);
+      --blue-dim: rgba(59, 130, 246, 0.1);
+      --cyan: #06b6d4;
+      --cyan-dim: rgba(6, 182, 212, 0.1);
       --green: #10b981;
-      --green-dim: rgba(16,185,129,0.12);
+      --green-dim: rgba(16, 185, 129, 0.1);
       --amber: #f59e0b;
-      --amber-dim: rgba(245,158,11,0.12);
+      --amber-dim: rgba(245, 158, 11, 0.1);
       --red: #ef4444;
-      --red-dim: rgba(239,68,68,0.12);
-      --violet: #8b5cf6;
-      --font: 'Outfit', sans-serif;
+      --red-dim: rgba(239, 68, 68, 0.1);
+      --font-main: 'Inter', sans-serif;
+      --font-heading: 'Outfit', sans-serif;
       --font-code: 'Space Grotesk', monospace;
+      --radius: 12px;
+      --transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);background-image:radial-gradient(at 0% 0%,rgba(37,99,235,0.08) 0,transparent 50%),radial-gradient(at 100% 100%,rgba(139,92,246,0.06) 0,transparent 50%);background-attachment:fixed;color:var(--text);font-family:var(--font);font-size:15px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
-    header{background:rgba(17,24,39,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:16px 36px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{background:linear-gradient(135deg,var(--blue),var(--violet));color:#fff;font-size:18px;font-weight:800;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;box-shadow:0 4px 14px rgba(37,99,235,0.35)}
-    header h1{font-size:18px;font-weight:700;letter-spacing:-0.02em}
-    header p{font-size:12px;color:var(--muted)}
-    #runtime-badge{display:none;font-family:var(--font-code);font-size:12px;color:var(--blue);background:var(--blue-dim);border:1px solid rgba(37,99,235,0.25);padding:4px 14px;border-radius:999px;font-weight:600}
-    main{max-width:1220px;margin:0 auto;padding:28px 22px 60px}
-    .grid{display:grid;grid-template-columns:310px 1fr;gap:22px;align-items:start}
-    @media(max-width:920px){.grid{grid-template-columns:1fr}}
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px;backdrop-filter:blur(10px)}
-    .card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:7px}
-    .preset-list{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
-    .preset-btn{background:rgba(31,41,55,0.4);border:1.5px solid var(--border);border-radius:10px;padding:12px 15px;text-align:left;cursor:pointer;color:var(--text);transition:.2s;display:flex;flex-direction:column;gap:3px}
-    .preset-btn:hover{border-color:#4b5563;background:var(--surface2)}
-    .preset-btn.active{border-color:var(--blue);background:var(--blue-dim)}
-    .preset-btn h4{font-size:13px;font-weight:600}
-    .preset-btn p{font-size:11px;color:var(--muted);line-height:1.4}
-    .upload-area{border:2px dashed var(--border);border-radius:14px;padding:22px 14px;text-align:center;cursor:pointer;transition:.2s;background:rgba(17,24,39,0.4);display:flex;flex-direction:column;align-items:center;gap:7px}
-    .upload-area:hover,.upload-area.dragover{border-color:var(--blue);background:var(--blue-dim)}
-    .upload-area p{font-size:13px;font-weight:500}
-    .upload-area span{font-size:11px;color:var(--muted)}
-    #file-input{display:none}
-    .form-label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:7px}
-    .select-input{width:100%;background:#111827;border:1.5px solid var(--border);border-radius:8px;color:var(--text);padding:9px 13px;font-family:var(--font);font-size:14px;outline:none;transition:.2s;cursor:pointer}
-    .select-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-dim)}
-    .run-btn{width:100%;background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;font-family:var(--font);font-size:14px;font-weight:700;padding:12px;border:none;border-radius:9px;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;box-shadow:0 4px 14px rgba(37,99,235,0.25)}
-    .run-btn:hover{opacity:.92;transform:translateY(-1px)}
-    .run-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-    .tab-nav{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:22px;overflow-x:auto}
-    .tab-btn{background:none;border:none;color:var(--muted);padding:11px 17px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.2s;white-space:nowrap}
-    .tab-btn:hover{color:var(--text)}
-    .tab-btn.active{color:var(--text);border-bottom-color:var(--blue)}
-    .tab-panel{display:none;animation:fadeUp .3s ease}
-    .tab-panel.active{display:block}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-    #empty-view{text-align:center;padding:80px 20px}
-    #empty-view .icon{font-size:46px;margin-bottom:14px;opacity:.25}
-    #empty-view h3{font-size:17px;font-weight:600;color:var(--muted);margin-bottom:7px}
-    #empty-view p{font-size:13px;color:#6b7280;max-width:380px;margin:0 auto}
-    #loader-view{display:none;flex-direction:column;align-items:center;justify-content:center;padding:100px 20px;gap:14px}
-    .spinner{width:46px;height:46px;border:4px solid rgba(255,255,255,0.05);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:22px}
-    .metric-card{background:rgba(31,41,55,0.3);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
-    .metric-card .label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:5px}
-    .metric-card .value{font-size:26px;font-weight:700;font-family:var(--font-code)}
-    .metric-card.blue .value{color:var(--blue)}
-    .metric-card.green .value{color:var(--green)}
-    .metric-card.amber .value{color:var(--amber)}
-    .metric-card.violet .value{color:var(--violet)}
-    .briefing-card{background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(139,92,246,0.04));border:1px solid rgba(37,99,235,0.22);border-radius:16px;padding:24px;margin-bottom:22px}
-    .briefing-card h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;margin-bottom:16px}
-    .brief-section{font-size:14px;line-height:1.75;margin-bottom:14px}
-    .brief-section:last-child{margin-bottom:0}
-    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-    @media(max-width:800px){.two-col{grid-template-columns:1fr}}
-    .chart-box{background:rgba(31,41,55,0.2);border:1px solid var(--border);border-radius:14px;padding:18px;display:flex;flex-direction:column;min-height:280px}
-    .chart-box h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:14px}
-    .chart-img{max-width:100%;height:auto;border-radius:8px;display:block}
-    .table-wrap{overflow-x:auto}
-    .tbl{width:100%;border-collapse:collapse;font-size:13px}
-    .tbl th{padding:9px 13px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--border);text-transform:uppercase;font-size:11px;letter-spacing:.05em}
-    .tbl td{padding:9px 13px;border-bottom:1px solid rgba(255,255,255,0.03)}
-    .tbl tr:last-child td{border-bottom:none}
-    .tbl tr:hover td{background:rgba(255,255,255,0.02)}
-    .mono{font-family:var(--font-code);font-size:12px}
-    .tag{background:rgba(255,255,255,0.07);border-radius:4px;padding:2px 7px;font-family:var(--font-code);font-size:11px}
-    .alert{border-radius:12px;padding:14px 18px;margin-bottom:14px;display:flex;gap:11px;align-items:flex-start}
-    .alert.green{background:var(--green-dim);border:1px solid rgba(16,185,129,0.25);color:#6ee7b7}
-    .alert.amber{background:var(--amber-dim);border:1px solid rgba(245,158,11,0.25);color:#fcd34d}
-    .alert.red{background:var(--red-dim);border:1px solid rgba(239,68,68,0.25);color:#fca5a5}
-    .alert h4{font-size:13px;font-weight:700;margin-bottom:3px}
-    .alert p{font-size:12px;line-height:1.5}
-    .driver-list{display:flex;flex-direction:column;gap:11px}
-    .driver-item{background:rgba(31,41,55,0.2);border:1px solid var(--border);border-radius:9px;padding:11px 15px}
-    .driver-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
-    .driver-name{font-weight:600;font-size:13px}
-    .driver-val{font-family:var(--font-code);font-size:12px;font-weight:700;color:var(--blue)}
-    .driver-track{background:rgba(255,255,255,0.05);height:5px;border-radius:999px}
-    .driver-fill{background:linear-gradient(90deg,var(--blue),var(--violet));height:100%;border-radius:999px;width:0%;transition:width .8s cubic-bezier(.1,.8,.2,1)}
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-main);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Background Grid & Glow */
+    .bg-elements {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      background-image: radial-gradient(circle at 15% 10%, rgba(59, 130, 246, 0.05) 0%, transparent 40%),
+                        radial-gradient(circle at 85% 90%, rgba(6, 182, 212, 0.03) 0%, transparent 40%);
+    }
+    .bg-grid {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-size: 50px 50px;
+      background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+      mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+    }
+
+    /* Scroll Reveals */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { transition: none; opacity: 1; transform: none; }
+    }
+
+    /* Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: transparent;
+      transition: var(--transition);
+      border-bottom: 1px solid transparent;
+    }
+    .navbar.scrolled {
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 40px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-icon {
+      width: 24px; height: 24px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      border-radius: 6px;
+      display: inline-block;
+      box-shadow: 0 0 15px var(--blue-glow);
+    }
+    .nav-cta {
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-family: var(--font-main);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,255,255,0.1); }
+
+    /* Main Container */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 100px;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 80px 0 60px;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-block;
+      font-family: var(--font-code);
+      font-size: 12px;
+      color: var(--blue);
+      background: var(--blue-dim);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .hero h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(40px, 6vw, 64px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(to right, #fff, #9ca3af);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.5;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--blue), #2563eb);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 28px;
+      font-family: var(--font-main);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 28px;
+      font-family: var(--font-main);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--border-hover);
+    }
+
+    /* Section Headings */
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title::before {
+      content: "";
+      width: 12px; height: 12px;
+      background: var(--blue);
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    /* Layout Grids */
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    @media(max-width: 800px) { .data-grid { grid-template-columns: 1fr; } }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      transition: var(--transition);
+    }
+    .card:hover { border-color: var(--border-hover); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+
+    /* Upload Area */
+    .upload-area {
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      background: rgba(255,255,255,0.02);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      height: 100%;
+      justify-content: center;
+    }
+    .upload-area:hover, .upload-area.dragover {
+      border-color: var(--blue);
+      background: var(--blue-dim);
+    }
+    .upload-area svg { transition: var(--transition); stroke: var(--blue); }
+    .upload-area:hover svg { transform: translateY(-4px); }
+    .upload-area h3 { font-size: 16px; font-weight: 600; }
+    .upload-area p { font-size: 13px; color: var(--muted); }
+    #file-input { display: none; }
+
+    /* Presets */
+    .presets-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .preset-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .preset-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--blue);
+      background: rgba(31, 41, 55, 0.9);
+    }
+    .preset-card.active {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 1px var(--blue);
+      background: var(--blue-dim);
+    }
+    .preset-card::after {
+      content: "→";
+      position: absolute;
+      right: 16px; top: 50%;
+      transform: translateY(-50%) translateX(10px);
+      opacity: 0;
+      transition: var(--transition);
+      color: var(--blue);
+    }
+    .preset-card:hover::after { opacity: 1; transform: translateY(-50%) translateX(0); }
+    .preset-badge {
+      font-family: var(--font-code);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--cyan);
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+    .preset-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .preset-card p { font-size: 12px; color: var(--muted); line-height: 1.4; padding-right: 20px;}
+
+    /* Target Selection */
+    .target-card {
+      display: none;
+      margin-bottom: 40px;
+    }
+    .form-label {
+      display: block;
+      font-family: var(--font-code);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .select-input {
+      width: 100%;
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 14px 16px;
+      font-family: var(--font-main);
+      font-size: 15px;
+      outline: none;
+      transition: var(--transition);
+      cursor: pointer;
+      appearance: none;
+      background-image: url('data:image/svg+xml;utf8,<svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L7 7L13 1" stroke="%239ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+    .select-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-dim); }
+
+    /* Loader */
+    .loader-view {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 20px;
+      min-height: 400px;
+    }
+    .pulse-ring {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: var(--blue-dim);
+      border: 2px solid var(--blue);
+      position: relative;
+      animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      box-shadow: 0 0 20px var(--blue-glow);
+    }
+    .pulse-ring::after {
+      content: "";
+      width: 20px; height: 20px;
+      background: var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(59, 130, 246, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+    }
+    .loader-msg {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text);
+      transition: opacity 0.3s;
+      letter-spacing: 0.02em;
+    }
+
+    /* Results Layout */
+    .results-view { display: none; padding-top: 20px; }
+    .results-section-block {
+      margin-bottom: 80px;
+      position: relative;
+    }
+    .results-section-block::before {
+      content: "";
+      position: absolute;
+      left: -24px; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--border), transparent);
+    }
+
+    /* ML Pipeline Visual */
+    .pipeline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 32px;
+      margin-bottom: 60px;
+      overflow-x: auto;
+    }
+    .pipeline-node {
+      font-family: var(--font-code);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+    .pipeline-dot {
+      width: 10px; height: 10px;
+      background: var(--border);
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+    .pipeline-node.active .pipeline-dot {
+      background: var(--blue);
+      box-shadow: 0 0 10px var(--blue);
+    }
+    .pipeline-node.active { color: var(--text); }
+    .pipeline-line {
+      flex: 1; height: 1px;
+      background: var(--border);
+      margin: 0 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pipeline-line::after {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+      animation: scanline 2s infinite linear;
+    }
+    @keyframes scanline { to { left: 200%; } }
+
+    /* Metric Grids */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .metric-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .metric-card .label {
+      font-family: var(--font-code);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .metric-card .value {
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .metric-card.blue .value { color: var(--blue); }
+    .metric-card.green .value { color: var(--green); }
+    .metric-card.amber .value { color: var(--amber); }
+    .metric-card.red .value { color: var(--red); }
+    .metric-card.cyan .value { color: var(--cyan); }
+
+    /* Alerts */
+    .alert {
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      font-size: 14px;
+      border-left: 4px solid transparent;
+    }
+    .alert.green { background: var(--green-dim); border-color: var(--green); color: #d1fae5; }
+    .alert.amber { background: var(--amber-dim); border-color: var(--amber); color: #fef3c7; }
+    .alert.red { background: var(--red-dim); border-color: var(--red); color: #fee2e2; }
+    .alert h4 { font-weight: 600; margin-bottom: 4px; font-size: 15px; }
+    .alert p { opacity: 0.9; line-height: 1.4; }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .tbl { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
+    .tbl th {
+      padding: 12px 20px;
+      font-family: var(--font-code);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+    }
+    .tbl td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .tbl tr:last-child td { border-bottom: none; }
+    .tbl tr:hover td { background: rgba(255,255,255,0.02); }
+    .tag {
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-family: var(--font-code);
+      font-size: 11px;
+    }
+
+    /* Charts */
+    .chart-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .chart-box h3 {
+      font-family: var(--font-code);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .chart-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      margin: auto;
+      mix-blend-mode: screen; /* Helps matplotlib dark backgrounds blend better if not perfectly transparent */
+    }
+
+    /* Drivers */
+    .driver-list { display: flex; flex-direction: column; gap: 12px; }
+    .driver-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .driver-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; position: relative; z-index: 2; }
+    .driver-name { font-weight: 500; font-size: 14px; }
+    .driver-val { font-family: var(--font-code); font-size: 13px; font-weight: 700; color: var(--cyan); }
+    .driver-track { background: rgba(255,255,255,0.05); height: 4px; border-radius: 999px; position: relative; z-index: 2; }
+    .driver-fill {
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+      height: 100%; border-radius: 999px;
+      width: 0%;
+      transition: width 1s cubic-bezier(0.1, 0.8, 0.2, 1);
+    }
+
+    /* Briefing */
+    .briefing-card {
+      background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.8), rgba(5, 5, 5, 0.9));
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 16px;
+      padding: 40px;
+      position: relative;
+    }
+    .briefing-header {
+      display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px;
+      border-bottom: 1px solid var(--border); padding-bottom: 24px;
+    }
+    .briefing-card h3 {
+      font-family: var(--font-heading);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .briefing-card p.subtitle { font-size: 13px; color: var(--muted); font-family: var(--font-code); margin-top: 4px;}
+    .brief-section {
+      font-size: 15px;
+      line-height: 1.8;
+      color: #e5e7eb;
+      margin-bottom: 24px;
+    }
+    .brief-section strong { color: #fff; font-weight: 600; }
+    .copy-btn {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 13px; font-weight: 500; cursor: pointer; transition: var(--transition);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,0.1); }
+    .copy-btn.success { color: var(--green); border-color: var(--green); }
+
+    /* Util */
+    .mono { font-family: var(--font-code); }
+    #runtime-badge {
+      display: none;
+      position: fixed;
+      bottom: 24px; right: 24px;
+      font-family: var(--font-code);
+      font-size: 12px;
+      color: var(--blue);
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 8px 16px;
+      border-radius: 999px;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
   </style>
 </head>
 <body>
-<header>
+
+<div class="bg-elements">
+  <div class="bg-grid"></div>
+</div>
+
+<nav class="navbar" id="navbar">
   <div class="brand">
-    <div class="logo">AA</div>
-    <div><h1>AutoAnalyst</h1><p>Business Intelligence · Data Sanity · Predictive Driver Engine</p></div>
+    <div class="logo">
+      <span class="logo-icon"></span>
+      AutoAnalyst
+    </div>
   </div>
-  <div id="runtime-badge"></div>
-</header>
+  <button class="nav-cta" onclick="document.getElementById('data-section').scrollIntoView({behavior:'smooth'})">Analyze Data</button>
+</nav>
+
 <main>
-  <div class="grid">
-    <aside>
-      <div class="card">
-        <div class="card-title">📊 Select Dataset</div>
-        <div class="preset-list" id="preset-list"></div>
-        <div class="card-title" style="margin-top:18px;margin-bottom:10px">📁 Upload Your File</div>
+  <!-- Hero Section -->
+  <section class="hero reveal" id="hero">
+    <div class="hero-badge">AI-POWERED BUSINESS INTELLIGENCE</div>
+    <h1>Turn Raw Data Into Decisions.</h1>
+    <p>AutoAnalyst automatically audits your data, discovers predictive drivers, validates machine-learning models, and turns analysis into executive-ready insights.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="document.getElementById('data-section').scrollIntoView({behavior:'smooth'})">Upload Dataset</button>
+      <button class="btn-secondary" onclick="document.getElementById('data-section').scrollIntoView({behavior:'smooth'})">Explore Demos</button>
+    </div>
+  </section>
+
+  <!-- Data Input Section -->
+  <section class="reveal" id="data-section" style="margin-top: 80px;">
+    <h2 class="section-title">1. Select Data Source</h2>
+    <div class="data-grid">
+      <!-- Upload -->
+      <div class="card" style="padding: 0;">
         <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
-          <svg width="26" height="26" fill="none" stroke="#2563eb" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-          <p>Drag & Drop CSV / Excel</p>
-          <span>or click to browse</span>
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          <div>
+            <h3>Drop your dataset here</h3>
+            <p>CSV or Excel · Analyze in seconds</p>
+          </div>
           <input type="file" id="file-input" accept=".csv,.xls,.xlsx" />
         </div>
       </div>
-      <div class="card" id="target-card" style="display:none">
-        <div class="card-title">🎯 Target Metric</div>
-        <label class="form-label" for="target-select">Column to Predict / Profile</label>
-        <select class="select-input" id="target-select"></select>
-        <button class="run-btn" id="run-btn" disabled>
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          Run Audit & Driver Model
-        </button>
+      <!-- Presets -->
+      <div class="card">
+        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 16px; color: var(--muted); font-family: var(--font-code);">OR CHOOSE A PRESET</h3>
+        <div class="presets-container" id="preset-list"></div>
       </div>
-    </aside>
-    <section>
-      <div class="card" id="empty-view">
-        <div class="icon">📈</div>
-        <h3>Welcome to AutoAnalyst</h3>
-        <p>Select a preset dataset or upload your own CSV / Excel file, choose a target metric and click Run.</p>
+    </div>
+  </section>
+
+  <!-- Target Selection Section -->
+  <section class="reveal" id="target-card">
+    <h2 class="section-title">2. Configure Analysis</h2>
+    <div class="card">
+      <label class="form-label" for="target-select">Target Metric (Column to Predict)</label>
+      <select class="select-input" id="target-select"></select>
+      <button class="btn-primary" id="run-btn" disabled style="width: 100%; margin-top: 24px; justify-content: center; padding: 16px;">
+        Run Intelligence Pipeline
+      </button>
+    </div>
+  </section>
+
+  <!-- Loader View -->
+  <section class="loader-view reveal" id="loader-view">
+    <div class="pulse-ring"></div>
+    <h3 style="font-family: var(--font-heading); font-size: 20px; margin-bottom: 8px;">Executing Analytical Pipeline</h3>
+    <p class="loader-msg" id="loader-msg">Profiling dataset...</p>
+  </section>
+
+  <!-- Results View -->
+  <section class="results-view" id="results-view">
+    
+    <div class="pipeline reveal">
+      <div class="pipeline-node active"><div class="pipeline-dot"></div>DATA</div>
+      <div class="pipeline-line"></div>
+      <div class="pipeline-node active"><div class="pipeline-dot"></div>AUDIT</div>
+      <div class="pipeline-line"></div>
+      <div class="pipeline-node active"><div class="pipeline-dot"></div>ML ENGINE</div>
+      <div class="pipeline-line"></div>
+      <div class="pipeline-node active"><div class="pipeline-dot"></div>DRIVERS</div>
+      <div class="pipeline-line"></div>
+      <div class="pipeline-node active"><div class="pipeline-dot"></div>INSIGHTS</div>
+    </div>
+
+    <!-- Data Sanity -->
+    <div class="results-section-block reveal">
+      <h2 class="section-title">Data Sanity Audit</h2>
+      <div class="metric-grid">
+        <div class="metric-card blue"><div class="label">Total Records</div><div class="value" id="val-rows" data-val="0">0</div></div>
+        <div class="metric-card cyan"><div class="label">Parameters</div><div class="value" id="val-cols" data-val="0">0</div></div>
+        <div class="metric-card green"><div class="label">Memory (MB)</div><div class="value" id="val-mem" data-val="0">0</div></div>
+        <div class="metric-card" id="sanity-score-card"><div class="label">Sanity Status</div><div class="value" id="val-status" style="font-size: 24px; margin-top: 4px;">—</div></div>
       </div>
-      <div class="card" id="loader-view">
-        <div class="spinner"></div>
-        <h3 style="color:var(--text)">Executing Analytical Pipeline</h3>
-        <p style="color:var(--muted);font-size:13px">Running data sanity audit, training model, extracting drivers…</p>
+      <div id="sanity-alerts"></div>
+      <div class="table-wrap" style="margin-top: 24px;">
+        <table class="tbl" id="schema-table">
+          <thead><tr><th>Column</th><th>Type</th><th>Missing</th><th>Outliers (IQR)</th></tr></thead>
+          <tbody></tbody>
+        </table>
       </div>
-      <div id="results-view" style="display:none">
-        <div class="tab-nav">
-          <button class="tab-btn active" data-tab="briefing">📝 Executive Briefing</button>
-          <button class="tab-btn" data-tab="sanity">🛡 Data Sanity</button>
-          <button class="tab-btn" data-tab="drivers">⭐ Key Drivers</button>
-          <button class="tab-btn" data-tab="evaluation">🏆 Model Performance</button>
-        </div>
-        <div class="tab-panel active" id="panel-briefing">
-          <div class="briefing-card">
-            <h3>📄 Actionable Executive Summary</h3>
-            <div class="brief-section" id="brief-sanity"></div>
-            <div class="brief-section" id="brief-drivers"></div>
-            <div class="brief-section" id="brief-strategy"></div>
-          </div>
-          <div class="two-col">
-            <div class="chart-box" id="corr-box"><h3>Correlation Matrix</h3><img class="chart-img" id="img-corr" alt="Correlation Heatmap" /></div>
-            <div class="chart-box" id="dist-box"><h3>Feature Distributions</h3><img class="chart-img" id="img-dist" alt="Feature Distributions" /></div>
-          </div>
-        </div>
-        <div class="tab-panel" id="panel-sanity">
-          <div class="metric-grid">
-            <div class="metric-card blue"><div class="label">Total Records</div><div class="value" id="val-rows">—</div></div>
-            <div class="metric-card blue"><div class="label">Parameters</div><div class="value" id="val-cols">—</div></div>
-            <div class="metric-card green"><div class="label">Memory</div><div class="value" id="val-mem">—</div></div>
-            <div class="metric-card" id="sanity-score-card"><div class="label">Sanity Status</div><div class="value" id="val-status">—</div></div>
-          </div>
-          <div id="sanity-alerts"></div>
-          <div class="card">
-            <div class="card-title">Dataset Schema Audit</div>
-            <div class="table-wrap">
-              <table class="tbl" id="schema-table">
-                <thead><tr><th>Column</th><th>Type</th><th>Missing</th><th>Outliers (IQR)</th></tr></thead>
-                <tbody></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="tab-panel" id="panel-drivers">
-          <div class="two-col">
-            <div class="chart-box"><h3>Feature Importance Ranking</h3><img class="chart-img" id="img-drivers" alt="Feature Importances" /></div>
-            <div>
-              <div class="card-title" style="margin-bottom:14px">Top Operational Drivers</div>
-              <div class="driver-list" id="driver-bars"></div>
-            </div>
-          </div>
-        </div>
-        <div class="tab-panel" id="panel-evaluation">
-          <div class="metric-grid" id="eval-grid"></div>
-          <div class="two-col">
-            <div class="chart-box"><h3>5-Fold Cross Validation</h3><img class="chart-img" id="img-cv" alt="Cross Validation" /></div>
-            <div class="chart-box"><h3 id="eval-chart-title">Model Diagnostics</h3><img class="chart-img" id="img-eval" alt="Model Evaluation" /></div>
-          </div>
+    </div>
+
+    <!-- Exploratory Analysis -->
+    <div class="results-section-block reveal">
+      <h2 class="section-title">Exploratory Analysis</h2>
+      <div class="data-grid">
+        <div class="chart-box" id="corr-box"><h3>Correlation Matrix</h3><img class="chart-img" id="img-corr" alt="Correlation Heatmap" /></div>
+        <div class="chart-box" id="dist-box"><h3>Feature Distributions</h3><img class="chart-img" id="img-dist" alt="Feature Distributions" /></div>
+      </div>
+    </div>
+
+    <!-- ML Pipeline & Evaluation -->
+    <div class="results-section-block reveal">
+      <h2 class="section-title">Model Evaluation</h2>
+      <div class="metric-grid" id="eval-grid"></div>
+      <div class="data-grid">
+        <div class="chart-box"><h3>5-Fold Cross Validation</h3><img class="chart-img" id="img-cv" alt="Cross Validation" /></div>
+        <div class="chart-box"><h3 id="eval-chart-title">Model Diagnostics</h3><img class="chart-img" id="img-eval" alt="Model Evaluation" /></div>
+      </div>
+    </div>
+
+    <!-- Key Drivers -->
+    <div class="results-section-block reveal">
+      <h2 class="section-title">Key Predictive Drivers</h2>
+      <div class="data-grid">
+        <div class="chart-box"><h3>Feature Importance Ranking</h3><img class="chart-img" id="img-drivers" alt="Feature Importances" /></div>
+        <div class="card">
+          <h3 style="font-family: var(--font-code); font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 16px; letter-spacing: 0.05em; text-transform: uppercase;">Top Operational Drivers</h3>
+          <div class="driver-list" id="driver-bars"></div>
         </div>
       </div>
-    </section>
-  </div>
+    </div>
+
+    <!-- Executive Briefing -->
+    <div class="results-section-block reveal">
+      <h2 class="section-title">Executive Report</h2>
+      <div class="briefing-card">
+        <div class="briefing-header">
+          <div>
+            <h3>Executive Briefing</h3>
+            <p class="subtitle">Generated by AutoAnalyst Engine</p>
+          </div>
+          <button class="copy-btn" id="copy-btn">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy Report
+          </button>
+        </div>
+        <div id="report-content">
+          <div class="brief-section" id="brief-sanity"></div>
+          <div class="brief-section" id="brief-drivers"></div>
+          <div class="brief-section" id="brief-strategy"></div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div id="runtime-badge"></div>
 </main>
+
 <script>
-  const API="http://localhost:8000";
-  let activeSession=null;
-  const $=id=>document.getElementById(id);
-  const presetList=$("preset-list"),targetCard=$("target-card"),targetSelect=$("target-select");
-  const runBtn=$("run-btn"),emptyView=$("empty-view"),loaderView=$("loader-view");
-  const resultsView=$("results-view"),runtimeBadge=$("runtime-badge");
+  const API = "https://autoanalyst-api-ok6t.onrender.com";
+  let activeSession = null;
+  const $ = id => document.getElementById(id);
+  
+  // Elements
+  const presetList=$("preset-list"), targetCard=$("target-card"), targetSelect=$("target-select");
+  const runBtn=$("run-btn"), loaderView=$("loader-view"), resultsView=$("results-view");
+  const runtimeBadge=$("runtime-badge"), dataSection=$("data-section");
+
+  // Scroll Navbar effect
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) $('navbar').classList.add('scrolled');
+    else $('navbar').classList.remove('scrolled');
+  });
+
+  // Intersection Observer for Scroll Reveals
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  function attachObservers() {
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  }
+
+  // Animation Utility for Numbers
+  function animateValue(obj, start, end, duration, isFloat=false) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const current = progress * (end - start) + start;
+      obj.innerHTML = isFloat ? current.toFixed(2) : Math.floor(current).toLocaleString();
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }
+
+  // Loader Text Cycling
+  const loaderMsgs = [
+    "Profiling dataset...", "Checking data quality...", "Detecting patterns...", 
+    "Training predictive model...", "Extracting key drivers...", "Compiling executive briefing..."
+  ];
+  let loaderInterval;
+  function startLoader() {
+    let idx = 0;
+    const msgEl = $("loader-msg");
+    msgEl.textContent = loaderMsgs[0];
+    msgEl.style.opacity = 1;
+    loaderInterval = setInterval(() => {
+      idx = (idx + 1) % loaderMsgs.length;
+      msgEl.style.opacity = 0;
+      setTimeout(() => {
+        msgEl.textContent = loaderMsgs[idx];
+        msgEl.style.opacity = 1;
+      }, 300);
+    }, 2500);
+  }
+  function stopLoader() {
+    clearInterval(loaderInterval);
+  }
 
   async function init(){
-    try{
-      const ds=await fetch(`${API}/datasets`).then(r=>r.json());
+    attachObservers();
+    try {
+      const ds = await fetch(`${API}/datasets`).then(r=>r.json());
       presetList.innerHTML="";
-      ds.forEach(d=>{
-        const btn=document.createElement("button");
-        btn.className="preset-btn";
-        btn.innerHTML=`<h4>${d.name}</h4><p>${d.description}</p>`;
-        btn.addEventListener("click",()=>selectPreset(d,btn));
+      ds.forEach(d => {
+        const typeBadge = d.name.toLowerCase().includes("churn") ? "CLASSIFICATION" : 
+                          d.name.toLowerCase().includes("sales") ? "REGRESSION" : "DATASET";
+        const btn = document.createElement("div");
+        btn.className = "preset-card";
+        btn.innerHTML = `<div class="preset-badge">${typeBadge}</div><h4>${d.name}</h4><p>${d.description}</p>`;
+        btn.addEventListener("click", () => selectPreset(d, btn));
         presetList.appendChild(btn);
       });
-    }catch{
-      presetList.innerHTML=`<div class="alert red"><div>⚠</div><div><h4>Backend Offline</h4><p>Run: <code>uvicorn main:app --reload --port 8000</code></p></div></div>`;
+    } catch {
+      presetList.innerHTML=`<div class="alert red"><div>⚠</div><div><h4>Backend Offline</h4><p>API is unreachable.</p></div></div>`;
     }
   }
 
-  async function selectPreset(d,el){
-    document.querySelectorAll(".preset-btn").forEach(b=>b.classList.remove("active"));
+  async function selectPreset(d, el){
+    document.querySelectorAll(".preset-card").forEach(b=>b.classList.remove("active"));
     el.classList.add("active");
-    showLoader();
+    
+    // Smooth transition to target card instead of hiding everything
+    targetCard.style.display="block";
+    targetSelect.innerHTML="<option>Loading columns...</option>";
+    runBtn.disabled = true;
+    targetCard.scrollIntoView({behavior: "smooth", block: "center"});
+    
     try{
-      const s=await fetch(`${API}/datasets/${d.id}/columns`).then(r=>r.json());
-      activeSession=d.id;
-      fillDropdown(s.columns,d.target);
-    }catch(e){alert("Error: "+e.message);hideLoader();}
+      const s = await fetch(`${API}/datasets/${d.id}/columns`).then(r=>r.json());
+      activeSession = d.id;
+      fillDropdown(s.columns, d.target);
+    } catch(e) {
+      alert("Error: "+e.message);
+    }
   }
 
-  function fillDropdown(cols,rec){
+  function fillDropdown(cols, rec){
     targetSelect.innerHTML="";
-    cols.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;if(c===rec)o.selected=true;targetSelect.appendChild(o);});
-    targetCard.style.display="block";runBtn.disabled=false;
-    hideLoader();emptyView.style.display="block";resultsView.style.display="none";
+    cols.forEach(c => {
+      const o = document.createElement("option");
+      o.value = c; o.textContent = c; 
+      if(c === rec) o.selected = true; 
+      targetSelect.appendChild(o);
+    });
+    runBtn.disabled = false;
   }
 
-  const dropZone=$("drop-zone"),fileInput=$("file-input");
-  ["dragenter","dragover"].forEach(e=>dropZone.addEventListener(e,ev=>{ev.preventDefault();dropZone.classList.add("dragover");}));
-  ["dragleave","drop"].forEach(e=>dropZone.addEventListener(e,ev=>{ev.preventDefault();dropZone.classList.remove("dragover");}));
-  dropZone.addEventListener("drop",e=>{if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
-  fileInput.addEventListener("change",()=>{if(fileInput.files[0])handleFile(fileInput.files[0]);});
+  const dropZone=$("drop-zone"), fileInput=$("file-input");
+  ["dragenter","dragover"].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.add("dragover"); }));
+  ["dragleave","drop"].forEach(e => dropZone.addEventListener(e, ev => { ev.preventDefault(); dropZone.classList.remove("dragover"); }));
+  dropZone.addEventListener("drop", e => { if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener("change", () => { if(fileInput.files[0]) handleFile(fileInput.files[0]); });
 
   async function handleFile(file){
-    document.querySelectorAll(".preset-btn").forEach(b=>b.classList.remove("active"));
-    showLoader();
-    const fd=new FormData();fd.append("file",file);
+    document.querySelectorAll(".preset-card").forEach(b=>b.classList.remove("active"));
+    targetCard.style.display="block";
+    targetSelect.innerHTML="<option>Uploading and parsing...</option>";
+    runBtn.disabled = true;
+    targetCard.scrollIntoView({behavior: "smooth", block: "center"});
+
+    const fd = new FormData(); fd.append("file", file);
     try{
-      const r=await fetch(`${API}/analyze/upload`,{method:"POST",body:fd});
-      if(!r.ok){const e=await r.json();throw new Error(e.detail);}
-      const data=await r.json();
-      activeSession=data.session_id;
-      fillDropdown(data.columns,data.columns.at(-1));
-    }catch(e){alert("Upload failed: "+e.message);hideLoader();}
+      const r = await fetch(`${API}/analyze/upload`, {method:"POST", body:fd});
+      if(!r.ok){ const e = await r.json(); throw new Error(e.detail); }
+      const data = await r.json();
+      activeSession = data.session_id;
+      fillDropdown(data.columns, data.columns.at(-1));
+    } catch(e) {
+      alert("Upload failed: " + e.message);
+      targetCard.style.display="none";
+    }
   }
 
-  runBtn.addEventListener("click",async()=>{
-    if(!activeSession)return;
-    showLoader();resultsView.style.display="none";emptyView.style.display="none";
+  runBtn.addEventListener("click", async () => {
+    if(!activeSession) return;
+    resultsView.style.display = "none";
+    loaderView.style.display = "flex";
+    loaderView.scrollIntoView({behavior: "smooth", block: "center"});
+    startLoader();
+    
     try{
-      const r=await fetch(`${API}/analyze/run`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({session_id:activeSession,target_column:targetSelect.value})});
-      if(!r.ok){const e=await r.json();throw new Error(e.detail);}
+      const r = await fetch(`${API}/analyze/run`, {
+        method:"POST", 
+        headers:{"Content-Type":"application/json"}, 
+        body:JSON.stringify({session_id: activeSession, target_column: targetSelect.value})
+      });
+      if(!r.ok){ const e = await r.json(); throw new Error(e.detail); }
       render(await r.json());
-    }catch(e){alert("Error: "+e.message);hideLoader();}
+    } catch(e) {
+      stopLoader();
+      loaderView.style.display="none";
+      alert("Error: " + e.message);
+    }
   });
 
   function render(d){
-    hideLoader();resultsView.style.display="block";
-    runtimeBadge.textContent=`⏱ ${d.runtime_sec}s`;runtimeBadge.style.display="block";
-    $("brief-sanity").innerHTML=md(d.report.sanity_briefing);
-    $("brief-drivers").innerHTML=md(d.report.root_cause_analysis);
-    $("brief-strategy").innerHTML=md(d.report.operational_strategy);
-    setImg("img-corr",d.charts.correlation,"corr-box");
-    setImg("img-dist",d.charts.distribution,"dist-box");
-    $("val-rows").textContent=d.sanity.shape.rows.toLocaleString();
-    $("val-cols").textContent=d.sanity.shape.cols;
-    $("val-mem").textContent=d.sanity.memory_mb+" MB";
-    const mK=Object.keys(d.sanity.missing),oK=Object.keys(d.sanity.outliers);
-    const sc=$("sanity-score-card"),sv=$("val-status");
-    sc.className="metric-card";
-    if(!mK.length&&!oK.length){sc.classList.add("green");sv.textContent="Stable";}
-    else if(mK.length&&oK.length){sc.classList.add("amber");sv.textContent="Caution";}
-    else{sc.classList.add("amber");sv.textContent="Warning";}
-    const al=$("sanity-alerts");al.innerHTML="";
-    if(!mK.length&&!oK.length){al.innerHTML=`<div class="alert green"><div>✓</div><div><h4>Clean Dataset</h4><p>Zero missing values and zero outliers detected.</p></div></div>`;}
-    else{
-      mK.forEach(col=>{const v=d.sanity.missing[col];al.innerHTML+=`<div class="alert ${v.pct>15?'red':'amber'}"><div>⚠</div><div><h4>Missing: ${col}</h4><p>${v.count} records (${v.pct}%) — imputation recommended.</p></div></div>`;});
-      oK.forEach(col=>{const v=d.sanity.outliers[col];al.innerHTML+=`<div class="alert amber"><div>⚡</div><div><h4>Outliers: ${col}</h4><p>${v.count} extreme values (${v.pct}%) — tree-based models advised.</p></div></div>`;});
-    }
-    const tb=document.querySelector("#schema-table tbody");tb.innerHTML="";
-    Object.keys(d.sanity.dtypes).forEach(col=>{
-      const isT=col===d.target,miss=d.sanity.missing[col],out=d.sanity.outliers[col];
-      tb.innerHTML+=`<tr><td class="mono" style="${isT?'color:var(--blue);font-weight:700':''}">${col}${isT?' <span class="tag" style="background:var(--blue-dim);color:var(--blue)">TARGET</span>':''}</td><td><span class="tag">${d.sanity.dtypes[col]}</span></td><td style="${miss?'color:var(--amber);font-weight:600':'color:var(--muted)'}">${miss?`${miss.count} (${miss.pct}%)`:'—'}</td><td style="${out?'color:var(--amber);font-weight:600':'color:var(--muted)'}">${out?`${out.count} (${out.pct}%)`:'—'}</td></tr>`;
+    stopLoader();
+    loaderView.style.display = "none";
+    resultsView.style.display = "block";
+    resultsView.scrollIntoView({behavior: "smooth", block: "start"});
+
+    // Reactivate reveals for new content
+    document.querySelectorAll('.results-view .reveal').forEach(el => {
+      el.classList.remove('active');
+      observer.observe(el);
     });
-    setImg("img-drivers",d.charts.drivers);
-    const bc=$("driver-bars");bc.innerHTML="";
-    if(d.drivers&&d.drivers.length){
-      const mx=d.drivers[0].importance;
-      d.drivers.forEach(dr=>{const p=Math.max(5,dr.importance/mx*100);bc.innerHTML+=`<div class="driver-item"><div class="driver-header"><span class="driver-name">${dr.feature}</span><span class="driver-val">${(dr.importance*100).toFixed(1)}%</span></div><div class="driver-track"><div class="driver-fill" style="width:${p}%"></div></div></div>`;});
-    }else{bc.innerHTML=`<div class="alert amber"><div>⚠</div><div><h4>No drivers</h4><p>Ensure numeric feature columns are present.</p></div></div>`;}
-    const isC=d.metrics.problem_type==="classification";
-    $("eval-grid").innerHTML=isC
-      ?`${mc("Accuracy",pct(d.metrics.accuracy),"blue")}${mc("F1-Score",pct(d.metrics.f1),"green")}${mc("Precision",pct(d.metrics.precision),"violet")}${mc("Recall",pct(d.metrics.recall),"amber")}`
-      :`${mc("R² Score",d.metrics.r2.toFixed(3),"blue")}${mc("MAE",d.metrics.mae.toFixed(2),"green")}${mc("RMSE",d.metrics.rmse.toFixed(2),"violet")}${mc("CV Score",d.cross_val.mean.toFixed(3),"amber")}`;
-    $("eval-chart-title").textContent=isC?"Confusion Matrix":"Residual Error Dispersion";
-    setImg("img-cv",d.charts.cross_val);setImg("img-eval",d.charts.model_eval);
-    switchTab("briefing");
+
+    runtimeBadge.textContent=`⏱ ${d.runtime_sec}s runtime`;
+    runtimeBadge.style.display="block";
+
+    $("brief-sanity").innerHTML = md(d.report.sanity_briefing);
+    $("brief-drivers").innerHTML = md(d.report.root_cause_analysis);
+    $("brief-strategy").innerHTML = md(d.report.operational_strategy);
+
+    setImg("img-corr", d.charts.correlation, "corr-box");
+    setImg("img-dist", d.charts.distribution, "dist-box");
+
+    // Animate Sanity Counters
+    animateValue($("val-rows"), 0, d.sanity.shape.rows, 1500);
+    animateValue($("val-cols"), 0, d.sanity.shape.cols, 1500);
+    animateValue($("val-mem"), 0, d.sanity.memory_mb, 1500, true);
+
+    const mK = Object.keys(d.sanity.missing), oK = Object.keys(d.sanity.outliers);
+    const sc = $("sanity-score-card"), sv = $("val-status");
+    sc.className = "metric-card";
+    if(!mK.length && !oK.length){ sc.classList.add("green"); sv.textContent="Stable"; }
+    else if(mK.length && oK.length){ sc.classList.add("amber"); sv.textContent="Caution"; }
+    else { sc.classList.add("amber"); sv.textContent="Warning"; }
+
+    const al = $("sanity-alerts"); al.innerHTML="";
+    if(!mK.length && !oK.length){
+      al.innerHTML=`<div class="alert green"><div>✓</div><div><h4>Clean Dataset</h4><p>Zero missing values and zero outliers detected.</p></div></div>`;
+    } else {
+      mK.forEach(col => {
+        const v = d.sanity.missing[col];
+        al.innerHTML += `<div class="alert ${v.pct>15?'red':'amber'}"><div>⚠</div><div><h4>Missing: ${col}</h4><p>${v.count} records (${v.pct}%) — imputation recommended.</p></div></div>`;
+      });
+      oK.forEach(col => {
+        const v = d.sanity.outliers[col];
+        al.innerHTML += `<div class="alert amber"><div>⚡</div><div><h4>Outliers: ${col}</h4><p>${v.count} extreme values (${v.pct}%) — tree-based models advised.</p></div></div>`;
+      });
+    }
+
+    const tb = document.querySelector("#schema-table tbody"); tb.innerHTML="";
+    Object.keys(d.sanity.dtypes).forEach(col => {
+      const isT = col===d.target, miss = d.sanity.missing[col], out = d.sanity.outliers[col];
+      tb.innerHTML += `<tr>
+        <td class="mono" style="${isT?'color:var(--blue);font-weight:700':''}">${col}${isT?' <span class="tag" style="background:var(--blue-dim);color:var(--blue);margin-left:8px;">TARGET</span>':''}</td>
+        <td><span class="tag">${d.sanity.dtypes[col]}</span></td>
+        <td style="${miss?'color:var(--amber);font-weight:600':'color:var(--muted)'}">${miss?`${miss.count} (${miss.pct}%)`:'—'}</td>
+        <td style="${out?'color:var(--amber);font-weight:600':'color:var(--muted)'}">${out?`${out.count} (${out.pct}%)`:'—'}</td>
+      </tr>`;
+    });
+
+    setImg("img-drivers", d.charts.drivers);
+    const bc = $("driver-bars"); bc.innerHTML="";
+    if(d.drivers && d.drivers.length){
+      const mx = d.drivers[0].importance;
+      d.drivers.forEach((dr, i) => {
+        const p = Math.max(5, dr.importance/mx*100);
+        // Delay animation slightly so it plays when scrolled into view
+        setTimeout(() => {
+          const fill = document.getElementById(`driver-fill-${i}`);
+          if(fill) fill.style.width = `${p}%`;
+        }, 500);
+        
+        bc.innerHTML += `<div class="driver-item">
+          <div class="driver-header"><span class="driver-name">${dr.feature}</span><span class="driver-val">${(dr.importance*100).toFixed(1)}%</span></div>
+          <div class="driver-track"><div class="driver-fill" id="driver-fill-${i}"></div></div>
+        </div>`;
+      });
+    } else {
+      bc.innerHTML=`<div class="alert amber"><div>⚠</div><div><h4>No drivers</h4><p>Ensure numeric feature columns are present.</p></div></div>`;
+    }
+
+    const isC = d.metrics.problem_type === "classification";
+    $("eval-grid").innerHTML = isC
+      ? `${mc("Accuracy", pct(d.metrics.accuracy), "blue")}${mc("F1-Score", pct(d.metrics.f1), "cyan")}${mc("Precision", pct(d.metrics.precision), "green")}${mc("Recall", pct(d.metrics.recall), "amber")}`
+      : `${mc("R² Score", d.metrics.r2.toFixed(3), "blue")}${mc("MAE", d.metrics.mae.toFixed(2), "green")}${mc("RMSE", d.metrics.rmse.toFixed(2), "cyan")}${mc("CV Score", d.cross_val.mean.toFixed(3), "amber")}`;
+    
+    $("eval-chart-title").textContent = isC ? "Confusion Matrix" : "Residual Error Dispersion";
+    setImg("img-cv", d.charts.cross_val); 
+    setImg("img-eval", d.charts.model_eval);
   }
 
-  function showLoader(){loaderView.style.display="flex";emptyView.style.display="none";resultsView.style.display="none";runBtn.disabled=true;}
-  function hideLoader(){loaderView.style.display="none";runBtn.disabled=false;}
-  function setImg(id,src,boxId){const el=$(id);if(src){el.src=src;if(boxId)$(boxId).style.display="flex";}else{if(boxId)$(boxId).style.display="none";}}
-  function switchTab(n){document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===n));document.querySelectorAll(".tab-panel").forEach(p=>p.classList.toggle("active",p.id===`panel-${n}`));}
-  function pct(v){return v!=null?(v*100).toFixed(1)+"%":"—";}
-  function mc(l,v,c){return `<div class="metric-card ${c}"><div class="label">${l}</div><div class="value">${v}</div></div>`;}
-  function md(t){return t?t.replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>"):"";} 
-  document.querySelectorAll(".tab-btn").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
-  document.addEventListener("DOMContentLoaded",init);
+  function setImg(id, src, boxId){
+    const el = $(id);
+    if(src){ el.src=src; if(boxId)$(boxId).style.display="flex"; }
+    else { if(boxId)$(boxId).style.display="none"; }
+  }
+
+  function pct(v){ return v != null ? (v*100).toFixed(1)+"%" : "—"; }
+  function mc(l, v, c){ return `<div class="metric-card ${c}"><div class="label">${l}</div><div class="value">${v}</div></div>`; }
+  function md(t){ return t ? t.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") : ""; } 
+
+  // Copy Report Logic
+  $("copy-btn").addEventListener("click", () => {
+    const text = $("report-content").innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = $("copy-btn");
+      const ogHtml = btn.innerHTML;
+      btn.innerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Copied!`;
+      btn.classList.add("success");
+      setTimeout(() => {
+        btn.innerHTML = ogHtml;
+        btn.classList.remove("success");
+      }, 2000);
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", init);
 </script>
 </body>
 </html>
